@@ -1,16 +1,17 @@
 const express = require("express");
-const cors = require("cors");
 const { RtcTokenBuilder, RtcRole } = require("agora-access-token");
 
 const app = express();
 
-// ✅ FORCE CORS FOR ALL ORIGINS
-app.use(
-  cors({
-    origin: "*",
-    methods: ["GET"],
-  }),
-);
+/**
+ * 🔥 FORCE CORS HEADERS MANUALLY (NO DEPENDENCIES)
+ */
+app.use((req, res, next) => {
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Methods", "GET, OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+  next();
+});
 
 const APP_ID = process.env.APP_ID;
 const APP_CERTIFICATE = process.env.APP_CERTIFICATE;
@@ -45,5 +46,5 @@ app.get("/", (req, res) => {
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-  console.log(`Token server running on port ${PORT}`);
+  console.log(`Token server listening on ${PORT}`);
 });
