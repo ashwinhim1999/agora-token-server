@@ -3,13 +3,21 @@ const cors = require("cors");
 const { RtcTokenBuilder, RtcRole } = require("agora-access-token");
 
 const app = express();
-app.use(cors());
+
+// ✅ FORCE CORS FOR ALL ORIGINS
+app.use(
+  cors({
+    origin: "*",
+    methods: ["GET"],
+  }),
+);
 
 const APP_ID = process.env.APP_ID;
 const APP_CERTIFICATE = process.env.APP_CERTIFICATE;
 
 app.get("/token", (req, res) => {
   const channel = req.query.channel;
+
   if (!channel) {
     return res.status(400).json({ error: "channel required" });
   }
@@ -31,6 +39,11 @@ app.get("/token", (req, res) => {
   res.json({ token });
 });
 
-app.listen(3000, () => {
-  console.log("Token server running on port 3000");
+app.get("/", (req, res) => {
+  res.send("Agora token server running");
+});
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`Token server running on port ${PORT}`);
 });
